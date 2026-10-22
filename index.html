@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart AI Chatbot - B.Tech AI Minor Project</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+      --glass-bg: rgba(30, 41, 59, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --accent-purple: #c084fc;
+      --accent-blue: #60a5fa;
+      --accent-green: #4ade80;
+      --user-msg-bg: #2563eb;
+      --bot-msg-bg: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 850px;
+      height: 90vh;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    /* Header Styling */
+    .header {
+      padding: 20px 25px;
+      background: rgba(15, 23, 42, 0.8);
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header-title h1 {
+      font-size: 1.4rem;
+      background: linear-gradient(to right, var(--accent-purple), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .name-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(30, 41, 59, 0.6);
+      padding: 6px 12px;
+      border-radius: 25px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .name-control label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .name-control input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.9rem;
+      outline: none;
+      width: 120px;
+    }
+
+    /* Quick Prompt Pills */
+    .quick-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(15, 23, 42, 0.5);
+      overflow-x: auto;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .pill {
+      background: rgba(51, 65, 85, 0.6);
+      color: var(--accent-blue);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .pill:hover {
+      background: var(--accent-blue);
+      color: #0f172a;
+      transform: translateY(-1px);
+    }
+
+    /* Chat Messages Box */
+    .chat-messages {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 18px;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: var(--user-msg-bg);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: var(--bot-msg-bg);
+      color: var(--text-main);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .message.system {
+      align-self: center;
+      background: rgba(192, 132, 252, 0.15);
+      color: var(--accent-purple);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    /* Input Footer */
+    .chat-input-area {
+      padding: 15px 25px;
+      background: rgba(15, 23, 42, 0.8);
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      gap: 12px;
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--glass-border);
+      padding: 12px 20px;
+      border-radius: 30px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .chat-input-area input:focus {
+      border-color: var(--accent-purple);
+    }
+
+    .chat-input-area button {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      color: #0f172a;
+      font-weight: 700;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .chat-input-area button:hover {
+      opacity: 0.9;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-title">
+        <h1>🤖 Smart AI Chatbot</h1>
+        <p>B.Tech AI Minor Project • Rule-Based NLP Architecture</p>
+      </div>
+      <div class="name-control">
+        <label for="userName">User:</label>
+        <input type="text" id="userName" value="Friend" placeholder="Enter name...">
+      </div>
+    </div>
+
+    <!-- Quick Actions Toolbar -->
+    <div class="quick-bar">
+      <button class="pill" onclick="sendQuick('help')">❓ Help</button>
+      <button class="pill" onclick="sendQuick('what is AI?')">🤖 What is AI?</button>
+      <button class="pill" onclick="sendQuick('what is Machine Learning?')">🧠 Machine Learning</button>
+      <button class="pill" onclick="sendQuick('what is Python?')">🐍 Python</button>
+      <button class="pill" onclick="sendQuick('what is the date?')">📅 Date</button>
+      <button class="pill" onclick="sendQuick('what time is it?')">🕒 Time</button>
+      <button class="pill" onclick="sendQuick('calculate 25 * 8')">🔢 Math (25 * 8)</button>
+      <button class="pill" onclick="sendQuick('tell me a joke')">😄 Joke</button>
+      <button class="pill" onclick="sendQuick('share an AI fact')">💡 AI Fact</button>
+    </div>
+
+    <!-- Conversation Feed -->
+    <div class="chat-messages" id="chatFeed">
+      <div class="message system">
+        🤖 Welcome to Smart AI Chatbot! Enter your queries below or pick a topic from the quick pills above.
+      </div>
+    </div>
+
+    <!-- Message Input Bar -->
+    <div class="chat-input-area">
+      <input type="text" id="userMsg" placeholder="Type a message or ask a question (e.g., 'What is AI?', 'Calculate 50 + 20')..." onkeypress="handleKeyPress(event)">
+      <button onclick="sendMessage()">Send ➔</button>
+    </div>
+  </div>
+
+  <script>
+    const chatFeed = document.getElementById('chatFeed');
+    const userMsgInput = document.getElementById('userMsg');
+    const userNameInput = document.getElementById('userName');
+
+    function appendMessage(sender, text, type) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${type}`;
+      msgDiv.innerText = text;
+      chatFeed.appendChild(msgDiv);
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    function sendQuick(promptText) {
+      userMsgInput.value = promptText;
+      sendMessage();
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    async function sendMessage() {
+      const text = userMsgInput.value.trim();
+      const name = userNameInput.value.trim() || "Friend";
+
+      if (!text) return;
+
+      // Display User Message
+      appendMessage(name, text, 'user');
+      userMsgInput.value = '';
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, message: text })
+        });
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+          appendMessage('Bot', data.response, 'bot');
+        } else {
+          appendMessage('System', 'Error processing request.', 'system');
+        }
+      } catch (err) {
+        appendMessage('System', 'Unable to reach chatbot web server.', 'system');
+      }
+    }
+  </script>
+</body>
+</html>

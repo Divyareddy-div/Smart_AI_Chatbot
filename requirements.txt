@@ -1,0 +1,19 @@
+# ==========================================
+# Smart AI Chatbot - Requirements
+# B.Tech AI Minor Project
+# ==========================================
+
+# Python Version Requirement:
+# Python 3.8 or higher
+
+# Dependencies:
+# NO EXTERNAL LIBRARIES REQUIRED.
+# This project uses built-in Python standard libraries only:
+# - datetime    (For current date and time formatting)
+# - random      (For random joke and AI fact selection)
+# - re          (For regex-based pattern matching & NLP rules)
+# - sys         (For system utilities)
+# - math        (For safe mathematical operations)
+# - tkinter     (For Desktop GUI Application)
+# - http.server (For Web Application Server)
+# - json        (For REST API payload parsing)
